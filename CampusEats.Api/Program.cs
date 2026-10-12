@@ -67,12 +67,29 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    if (!db.MenuItems.Any())
+    var seed = new[]
     {
-        db.MenuItems.AddRange(
-            new MenuItem { Name = "Kottu Roti", Price = 750m, Category = "Mains" },
-            new MenuItem { Name = "Fried Rice", Price = 850m, Category = "Mains" },
-            new MenuItem { Name = "Watalappan", Price = 350m, Category = "Dessert" });
+        new MenuItem { Name = "Kottu Roti", Price = 750m, Category = "Mains" },
+        new MenuItem { Name = "Fried Rice", Price = 850m, Category = "Mains" },
+        new MenuItem { Name = "Watalappan", Price = 350m, Category = "Dessert" },
+        new MenuItem { Name = "Rice & Curry", Price = 450m, Category = "Mains" },
+        new MenuItem { Name = "Chicken Biryani", Price = 950m, Category = "Mains" },
+        new MenuItem { Name = "String Hoppers", Price = 400m, Category = "Mains" },
+        new MenuItem { Name = "Egg Hoppers", Price = 120m, Category = "Snacks" },
+        new MenuItem { Name = "Fish Bun", Price = 150m, Category = "Snacks" },
+        new MenuItem { Name = "Vegetable Roti", Price = 100m, Category = "Snacks" },
+        new MenuItem { Name = "Veg Sub", Price = 600m, Category = "Snacks", Available = false },
+        new MenuItem { Name = "Curd & Treacle", Price = 300m, Category = "Dessert" },
+        new MenuItem { Name = "Iced Milo", Price = 300m, Category = "Drinks" },
+        new MenuItem { Name = "Plain Tea", Price = 80m, Category = "Drinks" },
+        new MenuItem { Name = "Mango Juice", Price = 280m, Category = "Drinks" },
+    };
+    // add any starter dishes that aren't in the database yet (safe to run on every start)
+    var existing = db.MenuItems.Select(m => m.Name).ToHashSet();
+    var missing = seed.Where(m => !existing.Contains(m.Name)).ToList();
+    if (missing.Count > 0)
+    {
+        db.MenuItems.AddRange(missing);
         db.SaveChanges();
     }
 }

@@ -25,21 +25,44 @@ function OrderPage() {
     if (Object.keys(found).length === 0) setDone(true);
   }
 
-  if (done) return <p>Thanks, {form.name}! Order received.</p>;
+  if (done)
+    return (
+      <div className="form-card">
+        <h1>Order placed</h1>
+        <p>Thanks, {form.name}! Your order is in.</p>
+      </div>
+    );
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="name" value={form.name} onChange={handleChange} />
-      {errors.name && <span> {errors.name}</span>}
+    <>
+      <div className="page-head">
+        <div>
+          <h1>Place an order</h1>
+          <p>Tell us who you are and how many you'd like.</p>
+        </div>
+      </div>
+      <form className="form-card" onSubmit={handleSubmit} noValidate>
+        <div className="field">
+          <label htmlFor="name">Your name</label>
+          <input id="name" name="name" value={form.name} onChange={handleChange} />
+          {errors.name && <span className="field-error">{errors.name}</span>}
+        </div>
 
-      <input name="email" value={form.email} onChange={handleChange} />
-      {errors.email && <span> {errors.email}</span>}
+        <div className="field">
+          <label htmlFor="email">Email</label>
+          <input id="email" name="email" type="email" value={form.email} onChange={handleChange} />
+          {errors.email && <span className="field-error">{errors.email}</span>}
+        </div>
 
-      <input name="qty" type="number" value={form.qty} onChange={handleChange} />
-      {errors.qty && <span> {errors.qty}</span>}
+        <div className="field">
+          <label htmlFor="qty">Quantity</label>
+          <input id="qty" name="qty" type="number" min="1" value={form.qty} onChange={handleChange} />
+          {errors.qty && <span className="field-error">{errors.qty}</span>}
+        </div>
 
-      <button type="submit">Place order</button>
-    </form>
+        <button className="btn" type="submit">Place order</button>
+      </form>
+    </>
   );
 }
 
